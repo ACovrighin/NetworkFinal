@@ -15,7 +15,9 @@
     {% if error %}
         <p style="color: red;">Error: {{ error }}</p>
     {% endif %}
-    <form method="post" enctype="multipart/form-data">
+    <div class="logincontainer">
+    <div class="formrow">
+    <form method="post" enctype="multipart/form-data" class="forminput">
         {% csrf_token %}
         
         <label for="id_email_sender">Your Email:</label>
@@ -44,5 +46,7 @@
         
         <button type="submit">Send</button>
     </form>
+</div>
+</div>
 </body>
 </html>
