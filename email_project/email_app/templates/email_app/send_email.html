@@ -8,55 +8,47 @@
     <link rel="stylesheet" type="text/css" href="{% static 'email_app/styles.css' %}">
 </head>
 <body>
-    
-    <h2>Send an Email</h2>
-    {% if message %}
-        <p style="color: green;">{{ message }}</p>
-    {% endif %}
-    {% if error %}
-        <p style="color: red;">Error: {{ error }}</p>
-    {% endif %}
-
     <nav style="display: flex; justify-content: center; gap: 20px; padding: 15px; background: linear-gradient(45deg, #ff4b2b, #ff416c); color: white;">
         <a href="{% url 'send_email' %}" style="color: white; text-decoration: none; font-weight: bold;">Send</a>
         <a href="{% url 'sent_emails' %}" style="color: white; text-decoration: none; font-weight: bold;">Sent</a>
         <a href="{% url 'inbox' %}" style="color: white; text-decoration: none; font-weight: bold;">Inbox</a>
     </nav>
-    
-    <div class="logincontainer">
-    <div class="formrow">
 
+    <header>
+        <h1>Cmail</h1>
+    </header>
+
+    <div class="form-container">
+        {% if message %}
+            <p class="alert-success">{{ message }}</p>
+        {% endif %}
+        {% if error %}
+            <p class="alert-error">Error: {{ error }}</p>
+        {% endif %}
         
-    <form method="post" enctype="multipart/form-data" class="forminput">
-        {% csrf_token %}
-        
-        <label for="id_email_sender">Your Email:</label>
-        {{ form.email_sender }}
-        <br>
-        
-        <label for="id_email_receivers">Recipient Emails (comma-separated):</label>
-        {{ form.email_receivers }}
-        <br>
-        
-        <label for="id_cc_receivers">CC (comma-separated):</label>
-        {{ form.cc_receivers }}
-        <br>
-        
-        <label for="id_subject">Subject:</label>
-        {{ form.subject }}
-        <br>
-        
-        <label for="id_body">Message:</label>
-        {{ form.body }}
-        <br>
-        
-        <label for="id_attachment">Attachment:</label>
-        {{ form.attachment }}
-        <br><br>
-        
-        <button type="submit">Send</button>
-    </form>
-</div>
-</div>
+        <form method="post" enctype="multipart/form-data" class="email-form">
+            {% csrf_token %}
+            
+            <label for="id_email_sender">Your Email:</label>
+            {{ form.email_sender }}
+            
+            <label for="id_email_receivers">Recipient Emails (comma-separated):</label>
+            {{ form.email_receivers }}
+            
+            <label for="id_cc_receivers">CC (comma-separated):</label>
+            {{ form.cc_receivers }}
+            
+            <label for="id_subject">Subject:</label>
+            {{ form.subject }}
+            
+            <label for="id_body">Message:</label>
+            {{ form.body }}
+            
+            <label for="id_attachment">Attachment:</label>
+            {{ form.attachment }}
+            
+            <button type="submit">Send</button>
+        </form>
+    </div>
 </body>
 </html>
