@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import EmailForm
 import smtplib
 import ssl
@@ -7,6 +7,7 @@ import os
 import email
 from email.message import EmailMessage
 from django.conf import settings
+from django.contrib import messages
 
 
 import imaplib
@@ -141,11 +142,20 @@ def send_email(request):
 
             # Send Email using SMTP
             context = ssl.create_default_context()
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-                smtp.login(email_sender, settings.APP_PASSWORD)
-                smtp.send_message(em)
+            try:
+                with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+                    smtp.login(email_sender, settings.APP_PASSWORD)
+                    smtp.send_message(em)
                 
-            return render(request, 'email_app/email_sent.html', {'email': email_sender})
+                messages.success(request, "Email sent successfully!")
+                return redirect('email_sent')  # Redirect to the success page
+            except Exception as e:
+                messages.error(request, f"Failed to send email: {e}")
+                return redirect('send_email')  # Stay on the send email page if there's an error
     else:
         form = EmailForm()
+
     return render(request, 'email_app/send_email.html', {'form': form})
+
+def email_sent(request):
+    return render(request, 'email_app/email_sent.html') 

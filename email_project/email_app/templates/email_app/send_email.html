@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'email_app/styles.css' %}">
 </head>
 <body>
+    
     <h2>Send an Email</h2>
     {% if message %}
         <p style="color: green;">{{ message }}</p>
@@ -16,8 +17,9 @@
         <p style="color: red;">Error: {{ error }}</p>
     {% endif %}
 
-    <nav style="display: flex; justify-content: center; gap: 20px; padding: 15px; background: #007bff; color: white;">
-        <a href="{% url '' %}" style="color: white; text-decoration: none; font-weight: bold;">Send Email</a>
+    <nav style="display: flex; justify-content: center; gap: 20px; padding: 15px; background: linear-gradient(45deg, #ff4b2b, #ff416c); color: white;">
+        <a href="{% url 'send_email' %}" style="color: white; text-decoration: none; font-weight: bold;">Send</a>
+        <a href="{% url 'sent_emails' %}" style="color: white; text-decoration: none; font-weight: bold;">Sent</a>
         <a href="{% url 'inbox' %}" style="color: white; text-decoration: none; font-weight: bold;">Inbox</a>
     </nav>
     

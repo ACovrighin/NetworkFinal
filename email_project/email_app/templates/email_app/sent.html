@@ -12,19 +12,6 @@
             padding: 0;
             text-align: center;
         }
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 15px;
-            background: #007bff;
-            color: white;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
         .container {
             max-width: 600px;
             margin: 20px auto;
@@ -48,11 +35,11 @@
 </head>
 <body>
 
-<nav>
-    <a href="{% url 'send_email' %}">Send Email</a>
-    <a href="{% url 'inbox' %}">Inbox</a>
-    <a href="{% url 'sent_emails' %}">Sent Emails</a>
-</nav>
+    <nav style="display: flex; justify-content: center; gap: 20px; padding: 15px; background: linear-gradient(45deg, #ff4b2b, #ff416c); color: white;">
+        <a href="{% url 'send_email' %}" style="color: white; text-decoration: none; font-weight: bold;">Send</a>
+        <a href="{% url 'sent_emails' %}" style="color: white; text-decoration: none; font-weight: bold;">Sent</a>
+        <a href="{% url 'inbox' %}" style="color: white; text-decoration: none; font-weight: bold;">Inbox</a>
+    </nav>
 
 <div class="container">
     <h2>Sent Emails</h2>
