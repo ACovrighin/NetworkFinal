@@ -17,8 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
+from django.urls import path
+from email_app.views import fetch_inbox, send_email
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('email_app.urls')),
+    path("inbox/", fetch_inbox, name="inbox"),
+    path('send_email/', send_email, name='send_email')
+
 ]

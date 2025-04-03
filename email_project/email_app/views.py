@@ -2,10 +2,70 @@ from django.shortcuts import render
 from .forms import EmailForm
 import smtplib
 import ssl
+import imaplib
 import os
+import email
 from email.message import EmailMessage
 from django.conf import settings
 
+
+import imaplib
+import email
+from django.shortcuts import render
+from django.conf import settings
+
+import imaplib
+import email
+import pytz
+from email.utils import parsedate_to_datetime
+from django.conf import settings
+from django.shortcuts import render
+
+def fetch_inbox(request):
+    user = settings.EMAIL_HOST_USER
+    password = settings.EMAIL_HOST_PASSWORD
+    imap_url = "imap.gmail.com"
+
+    try:
+        con = imaplib.IMAP4_SSL(imap_url)
+        con.login(user, password)
+        con.select("Inbox")
+
+        result, data = con.search(None, "ALL")
+        email_ids = data[0].split()
+
+        email_list = []
+        toronto_tz = pytz.timezone("America/Toronto")  
+
+        for num in email_ids[-10:]:  
+            result, msg_data = con.fetch(num, "(RFC822)")
+            if result == "OK":
+                for response_part in msg_data:
+                    if isinstance(response_part, tuple):
+                        msg = email.message_from_bytes(response_part[1])
+                        date_str = msg["Date"]
+                        parsed_date = parsedate_to_datetime(date_str)
+
+                        if parsed_date and parsed_date.tzinfo is not None:
+                            parsed_date = parsed_date.astimezone(toronto_tz)  
+                        else:
+                            parsed_date = toronto_tz.localize(parsed_date)  
+
+                        email_list.append({
+                            "from": msg["From"],
+                            "subject": msg["Subject"],
+                            "date": parsed_date.strftime("%Y-%m-%d %H:%M:%S")  
+                        })
+
+        con.close()
+        con.logout()
+
+        email_list.sort(key=lambda x: x["date"], reverse=True)
+
+        return render(request, "email_app/inbox.html", {"emails": email_list})
+
+    except Exception as e:
+        return render(request, "email_app/inbox.html", {"error": str(e)})
 def send_email(request):
     if request.method == 'POST':
         form = EmailForm(request.POST, request.FILES)

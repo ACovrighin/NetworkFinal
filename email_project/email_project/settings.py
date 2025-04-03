@@ -131,3 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Add these settings for email credentials
 APP_PASSWORD = 'yrhe zfjp xbpi hbcd'
 
+EMAIL_HOST = 'imap.gmail.com'
+EMAIL_HOST_USER = 'acovrighin@gmail.com'
+EMAIL_HOST_PASSWORD = 'yrhe zfjp xbpi hbcd'
+
