@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from django.urls import path
-from email_app.views import fetch_inbox, send_email
+from email_app.views import fetch_inbox, send_email, fetch_sent_emails
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('email_app.urls')),
     path("inbox/", fetch_inbox, name="inbox"),
-    path('send_email/', send_email, name='send_email')
+    path('send_email/', send_email, name='send_email'),
+    path("sent/", fetch_sent_emails, name="sent_emails")
 
 ]
