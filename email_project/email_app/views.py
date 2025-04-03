@@ -67,6 +67,7 @@ def fetch_inbox(request):
     except Exception as e:
         return render(request, "email_app/inbox.html", {"error": str(e)})
 
+
 def fetch_sent_emails(request):
     user = settings.EMAIL_HOST_USER
     password = settings.EMAIL_HOST_PASSWORD
@@ -78,28 +79,35 @@ def fetch_sent_emails(request):
         con.select('"[Gmail]/Sent Mail"')
 
         result, data = con.search(None, "ALL")
-        email_nums = data[0].split()
-
-        if not email_nums:
-            return render(request, "email_app/sent.html", {"error": "No sent emails found."})
-
-        latest_10 = email_nums[-10:]  # Get last 10 emails
-        latest_10.reverse()  # Show latest first
+        email_ids = data[0].split()
 
         sent_emails = []
+        toronto_tz = pytz.timezone("America/Toronto")  
 
-        for num in latest_10:
+        for num in email_ids[-10:]:  
             result, msg_data = con.fetch(num, "(RFC822)")
-            for response_part in msg_data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_bytes(response_part[1])
-                    email_subject = msg["subject"]
-                    email_to = msg["to"]
-                    email_date = msg["Date"]
-                    sent_emails.append({"to": email_to, "subject": email_subject, "date": email_date})
+            if result == "OK":
+                for response_part in msg_data:
+                    if isinstance(response_part, tuple):
+                        msg = email.message_from_bytes(response_part[1])
+                        date_str = msg["Date"]
+                        parsed_date = parsedate_to_datetime(date_str)
+
+                        if parsed_date and parsed_date.tzinfo is not None:
+                            parsed_date = parsed_date.astimezone(toronto_tz)  
+                        else:
+                            parsed_date = toronto_tz.localize(parsed_date)  
+
+                        sent_emails.append({
+                            "to": msg["To"],
+                            "subject": msg["Subject"],
+                            "date": parsed_date.strftime("%Y-%m-%d %H:%M:%S")  
+                        })
 
         con.close()
         con.logout()
+
+        sent_emails.sort(key=lambda x: x["date"], reverse=True)
 
         return render(request, "email_app/sent.html", {"sent_emails": sent_emails})
 
