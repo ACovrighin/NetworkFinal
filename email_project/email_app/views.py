@@ -2,25 +2,15 @@ from django.shortcuts import render, redirect
 from .forms import EmailForm
 import smtplib
 import ssl
-import imaplib
 import os
 import email
 from email.message import EmailMessage
-from django.conf import settings
 from django.contrib import messages
-
-
-import imaplib
-import email
 from django.shortcuts import render
-from django.conf import settings
-
 import imaplib
-import email
 import pytz
 from email.utils import parsedate_to_datetime
 from django.conf import settings
-from django.shortcuts import render
 
 def fetch_inbox(request):
     user = settings.EMAIL_HOST_USER
@@ -138,7 +128,8 @@ def send_email(request):
             if attachment:
                 file_data = attachment.read()
                 file_name = attachment.name
-                em.add_attachment(file_data, maintype="application", subtype="octet-stream", filename=file_name)
+                em.add_attachment(file_data, maintype="application",
+                                   subtype="octet-stream", filename=file_name)
 
             # Send Email using SMTP
             context = ssl.create_default_context()
